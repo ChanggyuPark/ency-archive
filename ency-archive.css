@@ -10,10 +10,15 @@
       font-family:Pretendard,'Noto Sans KR','Malgun Gothic',sans-serif;
       color:var(--ea-ink); background:#fff; font-size:16px; line-height:1.55;
       font-synthesis:none; -webkit-font-smoothing:antialiased;
-      width:100%; padding:54px 24px 96px; box-sizing:border-box;
+      width:100%; padding:0 0 96px; box-sizing:border-box;
     }
     #ency-archive *,#ency-archive *::before,#ency-archive *::after{box-sizing:border-box}
-    #ency-archive .ea-wrap{max-width:1200px;margin:0 auto}
+    #ency-archive { --ea-gutter:24px; }
+    #ency-archive .ea-wrap > section {
+      max-width:1200px;
+      width:calc(100% - 2 * var(--ea-gutter));
+      margin-inline:auto;
+    }
     #ency-archive h1,#ency-archive h2,#ency-archive h3,#ency-archive p{margin:0;padding:0;word-break:keep-all}
     #ency-archive a{text-decoration:none;color:inherit}
     #ency-archive button,#ency-archive input{font:inherit}
@@ -21,7 +26,7 @@
     #ency-archive :is(a,button,input):focus-visible{outline:3px solid #1A73E8;outline-offset:3px}
     #ency-archive .ea-intro {
       position:relative; isolation:isolate; overflow:hidden;
-      margin-bottom:46px; padding:clamp(36px, 6vw, 84px) clamp(24px, 6vw, 76px);
+      margin-bottom:46px; padding:clamp(36px, 6vw, 84px) max(var(--ea-gutter), calc((100% - 1200px) / 2));
       background:#111214; color:#fff;
     }
     #ency-archive .ea-intro::after {
@@ -70,7 +75,7 @@
     #ency-archive .ea-card:hover,#ency-archive .ea-feature-card:hover{transform:translateY(-4px);box-shadow:0 12px 28px rgba(14,18,32,.09)}
     #ency-archive .ea-card:hover{border-color:#BFC9DC}
     #ency-archive .ea-thumb{width:100%;aspect-ratio:16/9;background:#EDF0F5;overflow:hidden;display:flex;align-items:center;justify-content:center}
-    #ency-archive .ea-thumb img{width:100%;height:100%;display:block;object-fit:cover;transition:transform .35s ease}
+    #ency-archive .ea-thumb img{width:100%;height:102%;flex:none;align-self:flex-end;display:block;object-fit:cover;object-position:center bottom;transition:transform .35s ease}
     #ency-archive .ea-card:hover img{transform:scale(1.025)}
     #ency-archive .ea-thumb-fallback{padding:24px;background:#EEF1F6;text-align:center;font-size:18px;line-height:1.4;font-weight:700;color:#67718A}
     #ency-archive .ea-card-body{padding:22px 21px 25px;flex:1;display:flex;align-items:flex-start;flex-direction:column}
@@ -89,7 +94,7 @@
     @keyframes ency-archive-pulse{from{opacity:.68}to{opacity:1}}
     #ency-archive [hidden]{display:none!important}
     @media(max-width:1000px){#ency-archive .ea-feature-grid{grid-template-columns:repeat(2,minmax(0,1fr))}#ency-archive .ea-card-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-    @media(max-width:640px){#ency-archive{padding:35px 16px 68px}#ency-archive .ea-intro{margin-bottom:37px}#ency-archive .ea-intro p{font-size:15px}#ency-archive .ea-section-title{font-size:22px}#ency-archive .ea-featured{margin-bottom:48px}#ency-archive .ea-feature-grid,#ency-archive .ea-card-grid{grid-template-columns:1fr;gap:14px}#ency-archive .ea-feature-card{min-height:0;padding:21px}#ency-archive .ea-feature-card p{flex:initial}#ency-archive .ea-library-head{display:block}#ency-archive .ea-search-wrap{width:100%;margin-top:18px}#ency-archive .ea-tabs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:thin}#ency-archive .ea-tab{white-space:nowrap;flex-shrink:0}#ency-archive .ea-card-body{padding:19px}}
+    @media(max-width:640px){#ency-archive{--ea-gutter:16px;padding:0 0 68px}#ency-archive .ea-intro{margin-bottom:37px}#ency-archive .ea-intro p{font-size:15px}#ency-archive .ea-section-title{font-size:22px}#ency-archive .ea-featured{margin-bottom:48px}#ency-archive .ea-feature-grid,#ency-archive .ea-card-grid{grid-template-columns:1fr;gap:14px}#ency-archive .ea-feature-card{min-height:0;padding:21px}#ency-archive .ea-feature-card p{flex:initial}#ency-archive .ea-library-head{display:block}#ency-archive .ea-search-wrap{width:100%;margin-top:18px}#ency-archive .ea-tabs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:thin}#ency-archive .ea-tab{white-space:nowrap;flex-shrink:0}#ency-archive .ea-card-body{padding:19px}}
     @media(prefers-reduced-motion:reduce){#ency-archive *,#ency-archive *::before,#ency-archive *::after{animation:none!important;transition:none!important}}
 
 #ency-archive .ea-product-filter {
