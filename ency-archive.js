@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const PATH = '/ENCY-Archive';
+  const PATHS = new Set(['/ENCY-Archive', '/ency-archive']);
   const PAGE_ID = 'page2752827';
   const ROOT_ID = 'ency-archive';
   const ROUTE_CLASS = 'ency-archive-route-active';
@@ -57,7 +57,7 @@
   }
 
   function reconcile() {
-    if (location.pathname !== PATH) {
+    if (!PATHS.has(location.pathname)) {
       teardown();
       return;
     }
