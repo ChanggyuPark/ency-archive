@@ -11,7 +11,7 @@
   if (window[installed]) return;
   window[installed] = true;
 
-  const markup = "<section id=\"ency-archive\" aria-label=\"ENCY 기술 자료실\">\n    <div class=\"ea-wrap\">\n      <div class=\"ea-intro\">\n        <h1>ENCY 기술 자료실</h1>\n        <p>제품 소개서부터 가공 가이드까지 필요한 자료를 찾아보세요.</p>\n      </div>\n      <section class=\"ea-featured\" id=\"ea-featured-section\" aria-labelledby=\"ea-featured-heading\">\n        <h2 class=\"ea-section-title\" id=\"ea-featured-heading\">주요 소개서</h2>\n        <p class=\"ea-section-copy\">제품별 소개서를 바로 내려받을 수 있습니다.</p>\n        <div id=\"ea-feature-grid\" class=\"ea-feature-grid\" aria-live=\"polite\"></div>\n      </section>\n      <section aria-labelledby=\"ea-library-heading\">\n        <div class=\"ea-library-head\">\n          <div><h2 class=\"ea-section-title\" id=\"ea-library-heading\">기술 자료</h2><p class=\"ea-section-copy\">카테고리별로 자료를 살펴보세요.</p></div>\n          <label class=\"ea-search-wrap\">\n            <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" aria-hidden=\"true\"><circle cx=\"10.8\" cy=\"10.8\" r=\"6.8\"/><path d=\"m16 16 5 5\"/></svg>\n            <input id=\"ea-search\" class=\"ea-search\" type=\"search\" placeholder=\"자료 검색\" aria-label=\"제목과 설명 검색\" autocomplete=\"off\">\n          </label>\n        </div>\n        <div id=\"ea-tabs\" class=\"ea-tabs\" role=\"tablist\" aria-label=\"자료 카테고리\"></div>\n        <div class=\"ea-product-filter\">\n          <label for=\"ea-product\">제품별 보기</label>\n          <select id=\"ea-product\"><option value=\"\">전체 제품</option></select>\n          <button id=\"ea-reset\" class=\"ea-retry\" type=\"button\">필터 초기화</button>\n        </div>\n        <p id=\"ea-results\" class=\"ea-results\" role=\"status\" aria-live=\"polite\"></p>\n        <div id=\"ea-card-grid\" class=\"ea-card-grid\"></div>\n        <div id=\"ea-message\" hidden></div>\n      </section>\n    </div>\n  </section>";
+  const markup = "<section id=\"ency-archive\" aria-label=\"ENCY 기술 자료실\">\n    <div class=\"ea-wrap\">\n      <div class=\"ea-intro\">\n        <h1>ENCY 기술 자료실</h1>\n        <p>제품 소개서부터 가공 가이드까지 필요한 자료를 찾아보세요.</p>\n      </div>\n      <section class=\"ea-featured\" id=\"ea-featured-section\" aria-labelledby=\"ea-featured-heading\">\n        <h2 class=\"ea-section-title\" id=\"ea-featured-heading\">주요 소개서</h2>\n        <p class=\"ea-section-copy\">제품별 소개서를 바로 내려받을 수 있습니다.</p>\n        <div id=\"ea-feature-grid\" class=\"ea-feature-grid\" aria-live=\"polite\"></div>\n      </section>\n      <section aria-labelledby=\"ea-library-heading\">\n        <div class=\"ea-library-head\">\n          <div><h2 class=\"ea-section-title\" id=\"ea-library-heading\">기술 자료</h2><p class=\"ea-section-copy\">카테고리별로 자료를 살펴보세요.</p></div>\n          <form class=\"ea-search-wrap\" role=\"search\">\n            <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" aria-hidden=\"true\"><circle cx=\"10.8\" cy=\"10.8\" r=\"6.8\"/><path d=\"m16 16 5 5\"/></svg>\n            <input id=\"ea-search\" class=\"ea-search\" type=\"search\" placeholder=\"자료 검색\" aria-label=\"제목과 설명 검색\" autocomplete=\"off\">\n            <button class=\"ea-search-submit\" type=\"submit\">검색</button>\n          </form>\n        </div>\n        <div id=\"ea-tabs\" class=\"ea-tabs\" role=\"tablist\" aria-label=\"자료 카테고리\"></div>\n        <div class=\"ea-product-filter\">\n          <label for=\"ea-product\">제품별 보기</label>\n          <select id=\"ea-product\"><option value=\"\">전체 제품</option></select>\n          <button id=\"ea-reset\" class=\"ea-retry\" type=\"button\">필터 초기화</button>\n        </div>\n        <p id=\"ea-results\" class=\"ea-results\" role=\"status\" aria-live=\"polite\"></p>\n        <div id=\"ea-card-grid\" class=\"ea-card-grid\"></div>\n        <div id=\"ea-message\" hidden></div>\n      </section>\n    </div>\n  </section>";
   let mounted;
 
   function teardown() {
@@ -103,6 +103,8 @@
     const results = root.querySelector('#ea-results');
     const message = root.querySelector('#ea-message');
     const search = root.querySelector('#ea-search');
+    const searchForm = search.form;
+    let query = '';
     const featureSection = root.querySelector('#ea-featured-section');
     const product = root.querySelector('#ea-product');
     const reset = root.querySelector('#ea-reset');
@@ -237,7 +239,6 @@
       });
     }
     function renderCards(items) {
-      const query = search.value.trim().toLocaleLowerCase('ko-KR');
       const visible = items.filter((item) => (activeCategory === '전체' || item.category === activeCategory) && (!product.value || item.product === product.value) && (!query || (item.title + ' ' + item.description).toLocaleLowerCase('ko-KR').includes(query)));
       results.textContent = '총 ' + visible.length + '개 자료';
       message.hidden = true; cardGrid.replaceChildren();
@@ -281,11 +282,15 @@
       } catch (error) { if (signal.aborted) return; console.error('[ENCY 자료실] 데이터 불러오기 실패:',error);showError(); }
     }
     const applyFilters = () => { if (!product.disabled) renderCards(ordinaryRows()); };
-    search.addEventListener('input', applyFilters, { signal });
+    searchForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      query = search.value.trim().toLocaleLowerCase('ko-KR');
+      applyFilters();
+    }, { signal });
     product.addEventListener('change', applyFilters, { signal });
     reset.addEventListener('click', () => {
       activeCategory = '전체';
-      product.value = search.value = '';
+      product.value = search.value = query = '';
       renderTabs(ordinaryRows());
       applyFilters();
     }, { signal });
