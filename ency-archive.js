@@ -287,7 +287,7 @@
         const csv = await response.text();
         if (signal.aborted) return;
         rows = fromCSV(csv);
-        const ordinary = rows.filter((item) => !item.pinned);
+        const ordinary = ordinaryRows();
         renderFeatured(rows.filter((item) => item.pinned));renderTabs(ordinary);renderProducts(ordinary);renderCards(ordinary);
         product.disabled = reset.disabled = false;
       } catch (error) { if (signal.aborted) return; console.error('[ENCY 자료실] 데이터 불러오기 실패:',error);showError(); }
