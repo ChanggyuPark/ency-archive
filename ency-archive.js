@@ -109,7 +109,8 @@
     const product = root.querySelector('#ea-product');
     const reset = root.querySelector('#ea-reset');
     let rows = [];
-    const ordinaryRows = () => rows.filter((item) => !item.pinned);
+    const ordinaryRows = () => rows.filter((item) => !item.pinned)
+      .sort((a, b) => b.registeredOn - a.registeredOn);
 
     function renderProducts(items) {
       const selected = product.value;
@@ -141,6 +142,15 @@
       return table;
     }
 
+    function registrationDate(value) {
+      const match = /^(\d{4})[-./]\s*(\d{1,2})[-./]\s*(\d{1,2})\.?$/.exec(value);
+      if (!match) return 0;
+      const [, year, month, day] = match.map(Number);
+      const date = new Date(Date.UTC(year, month - 1, day));
+      if (date.getUTCFullYear() !== year || date.getUTCMonth() !== month - 1 || date.getUTCDate() !== day) return 0;
+      return year * 10000 + month * 100 + day;
+    }
+
     // 순서가 변경되어도 헤더명을 기준으로 정확한 열을 찾습니다.
     function fromCSV(csv) {
       const grid = parseCSV(csv);
@@ -157,7 +167,8 @@
           category:get('카테고리'), product:get('제품'),
           title:get('제목'), description:get('한줄 설명'), format:get('형식'),
           download:get('다운로드 URL'), post:get('게시글 URL'),
-          thumbnail:get('썸네일 URL'), sort:Number(get('정렬'))
+          thumbnail:get('썸네일 URL'), sort:Number(get('정렬')),
+          registeredOn:registrationDate(get('등록일'))
         };
       }).filter((item) => item.visible && item.title)
         .sort((a,b) => (Number.isFinite(a.sort) ? a.sort : Infinity) - (Number.isFinite(b.sort) ? b.sort : Infinity));
